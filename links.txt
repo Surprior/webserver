@@ -1,0 +1,12 @@
+Topic:
+https://docs.python.org/2/library/socket.html
+https://docs.python.org/2/library/thread.html#module-thread
+http://ruslanspivak.com/lsbaws-part1/
+accept-per-thread model
+
+Off Topic:
+http://eprint.iacr.org/2015/1192.pdf
+http://blog.demofox.org/2015/12/14/o1-data-lookups-with-minimal-perfect-hashing/
+https://github.com/tales/tales-client/tree/master/example
+https://github.com/fogleman/PirateMap
+https://www.reddit.com/r/proceduralgeneration/comments/3vcbb3/monthly_challenge_1_dec_2015_procedural_pirate_map/
