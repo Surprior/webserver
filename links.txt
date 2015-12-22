@@ -10,3 +10,4 @@ http://blog.demofox.org/2015/12/14/o1-data-lookups-with-minimal-perfect-hashing/
 https://github.com/tales/tales-client/tree/master/example
 https://github.com/fogleman/PirateMap
 https://www.reddit.com/r/proceduralgeneration/comments/3vcbb3/monthly_challenge_1_dec_2015_procedural_pirate_map/
+https://www.reddit.com/r/Android/comments/1w3woc/a_step_by_step_guide_about_how_to_get_started_and/
