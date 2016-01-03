@@ -1,15 +1,15 @@
 import socket
-#import sys
+import sys
 import threading
 
 class ctrl_thr(threading.Thread):
 	def __init__(self):
 		threading.Thread.__init__(self)
 	def run(self):
-		while True:
-			a = threading.active_count()
-			if a > 0:
-				print(a)
+		while s is not "q":
+			#a = threading.active_count()
+			#if a > 0:
+			#	print(a)
 			rsoc, raddr = soc.accept()
 			t = accept_req(rsoc)
 			t.start()
@@ -21,13 +21,26 @@ class accept_req(threading.Thread):
 	
 	def run(self):
 		r = self.Rsoc.recv(1024).decode()
-		path = r.split(' ')[1]
-		if path == "/":
-			path += "index.html"
-		print(threading.current_thread())
-		print(r)
+		path = ""
+		#print(r)
+		try:
+			path = r.split(' ')[1]
+		except IndexError as ierr:
+			print("MAG-IndexError: {0}".format(ierr))
+		
+		if path == "/" or path == "":
+			path = "/index.html"
 		#self.Rsoc.send(resp.encode())
-		resp_f = open(base_folder + path, 'rb')
+		print(path)
+		
+		try:
+			resp_f = open(base_folder + path, 'rb')
+		except FileNotFoundError as ferr:
+			print("MAG-404: {0}".format(ferr))
+			#print(threading.current_thread())
+			#Reply with 404
+			resp_f = open(base_folder + "/404.html", 'rb')
+		
 		self.Rsoc.sendfile(resp_f)
 		#resp_f.seek(0)
 		resp_f.close()
@@ -52,10 +65,18 @@ print("Listening on port " + str(port))
 
 #def gen_dict():
 #	pass
-
+s = ""
 t = ctrl_thr()
 t.start()
+while True:
+	s = input()
+	if s is "q":
+		print("Quitting!")
+		break
+	elif s is "c":
+		print(threading.active_count())
+	elif s is "e":
+		print(threading.enumerate())
 
-s = input()
 #resp_f.close()
-exit()
+sys.exit(0)
