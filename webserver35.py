@@ -33,24 +33,40 @@ class accept_req(threading.Thread):
 		#self.Rsoc.send(resp.encode())
 		print(path)
 		
+		if not conf_dict['Dir_trav'] and ".." in path:
+			path = "/404.html"
+		
 		try:
-			resp_f = open(base_folder + path, 'rb')
+			resp_f = open(conf_dict['Base_folder'] + path, 'rb')
 		except FileNotFoundError as ferr:
 			print("MAG-404: {0}".format(ferr))
 			#print(threading.current_thread())
 			#Reply with 404
-			resp_f = open(base_folder + "/404.html", 'rb')
+			resp_f = open(conf_dict['Base_folder'] + "/404.html", 'rb')
 		
 		self.Rsoc.sendfile(resp_f)
 		#resp_f.seek(0)
 		resp_f.close()
 		self.Rsoc.close()
 
+def tf(s):
+	if s == 'True':
+		return True
+	elif s == 'False':
+		return False
+	else:
+		return s
+
+# Read conf file
+with open('magws.conf', 'r') as cf:
+	#conf_dict = dict([line.rstrip().split(': ') for line in cf])
+	conf_dict = {key: tf(val) for line in cf for (key, val) in (line.rstrip().split(': '),)}
+print(conf_dict)
 
 host = "localhost"
 port = 8888
 
-base_folder = "www"
+#base_folder = "www"
 #resp = "HTTP/1.0 200 OK\n\n Hello mag!"
 #resp_f = open("index.html", 'rb')
 #resp_path = sys.argv[1]
@@ -63,20 +79,24 @@ soc.bind((host, port))
 soc.listen(1)
 print("Listening on port " + str(port))
 
-#def gen_dict():
-#	pass
 s = ""
 t = ctrl_thr()
 t.start()
 while True:
 	s = input()
-	if s is "q":
+	if s == "q":
 		print("Quitting!")
 		break
-	elif s is "c":
+	elif s == "c":
 		print(threading.active_count())
-	elif s is "e":
+	elif s == "e":
 		print(threading.enumerate())
+	elif s == "dt":
+		conf_dict['Dir_trav'] = True
+		print(conf_dict['Dir_trav'])
+	elif s == "df":
+		conf_dict['Dir_trav'] = False
+		print(conf_dict['Dir_trav'])
 
 #resp_f.close()
 sys.exit(0)
