@@ -59,15 +59,16 @@ host = "localhost"
 port = 8888
 
 soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
 soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 soc.bind((host, port))
 soc.listen(1)
 print("Listening on port " + str(port))
 
 s = ""
+
 t = ctrl_thr()
 t.start()
+
 while True:
 	s = input()
 	if s == "q":
