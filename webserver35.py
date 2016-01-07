@@ -1,6 +1,7 @@
 import socket
 import sys
 import threading
+from importlib import import_module
 
 class ctrl_thr(threading.Thread):
 	def __init__(self):
@@ -8,39 +9,63 @@ class ctrl_thr(threading.Thread):
 	def run(self):
 		while s is not "q":
 			rsoc, raddr = soc.accept()
-			t = accept_req(rsoc)
+			t = accept_req(rsoc, raddr)
 			t.start()
 
 class accept_req(threading.Thread):
-	def __init__(self, rsoc):
+	def __init__(self, rsoc, raddr):
 		threading.Thread.__init__(self)
 		self.Rsoc = rsoc
+		self.Raddr = raddr
 	
-	def run(self):
+	def run(self):	# Vurdere å splitte path
 		r = self.Rsoc.recv(1024).decode()
 		path = ""
+		kwargs = ""
+		
 		try:
 			path = r.split(' ')[1]
 		except IndexError as ierr:
-			print("MAG-IndexError: {0}".format(ierr))
+			1 == 1
+			#print("MAG-IndexError: {0}".format(ierr), end="\t")
 		
+		if "?" in path:
+			path, kwargs = path.split("?", 1)
+		
+		print(self.Raddr, end="\t")              
+		print(path, end="\t")
 		if path == "/" or path == "":
 			path = "/index.html"
-		print(path)
 		
 		if not conf_dict['Dir_trav'] and ".." in path:
 			path = "/404.html"
 		
-		try:
-			resp_f = open(conf_dict['Base_folder'] + path, 'rb')
-		except FileNotFoundError as ferr:
-			print("MAG-404: {0}".format(ferr))
-			#Reply with 404
-			resp_f = open(conf_dict['Base_folder'] + "/404.html", 'rb')
+		if ".py" in path:
+			if kwargs:
+				kwargs = parse_kwargs(kwargs)
+			mpath = conf_dict['Base_folder'] + "%s" % path.replace(".py", "").replace("/", ".")
+			reply = __import__(mpath, globals(), locals(), fromlist=[conf_dict['Base_folder']], level=0).run()
+			print(reply)
+			self.Rsoc.send(reply.encode('utf-8'))
+		else:
+			try:
+				resp_f = open(conf_dict['Base_folder'] + path, 'rb')
+			except FileNotFoundError as ferr:
+				#print("MAG-404: {0}".format(ferr))
+				path = "/404.html"
+				resp_f = open(conf_dict['Base_folder'] + path, 'rb')
+			self.Rsoc.sendfile(resp_f)
+			resp_f.close()
+			print(path, end="\n")
 		
-		self.Rsoc.sendfile(resp_f)
-		resp_f.close()
 		self.Rsoc.close()
+
+# Parse
+def  parse_kwargs(kwargs):
+	d_kwargs = {}
+	
+	
+	return d_kwargs
 
 def tf(s):
 	if s == 'True':
@@ -50,7 +75,7 @@ def tf(s):
 	else:
 		return s
 
-# Read conf file
+#Read conf file
 with open('magws.conf', 'r') as cf:
 	conf_dict = {key: tf(val) for line in cf for (key, val) in (line.rstrip().split(': '),)}
 print(conf_dict)
