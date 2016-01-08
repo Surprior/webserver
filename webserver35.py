@@ -1,6 +1,7 @@
 import socket
 import sys
 import threading
+import urllib.parse as urlparse
 from importlib import import_module
 
 class ctrl_thr(threading.Thread):
@@ -31,9 +32,11 @@ class accept_req(threading.Thread):
 		
 		if "?" in path:
 			path, kwargs = path.split("?", 1)
+			kwargs = "?" + kwargs
 		
-		print(self.Raddr, end="\t")              
-		print(path, end="\t")
+		print_(self.Raddr, "\t")
+		print_(path, "\t")
+		print_(kwargs, "\t")
 		if path == "/" or path == "":
 			path = "/index.html"
 		
@@ -43,9 +46,11 @@ class accept_req(threading.Thread):
 		if ".py" in path:
 			if kwargs:
 				kwargs = parse_kwargs(kwargs)
+			else:
+				kwargs = {}
 			mpath = conf_dict['Base_folder'] + "%s" % path.replace(".py", "").replace("/", ".")
-			reply = __import__(mpath, globals(), locals(), fromlist=[conf_dict['Base_folder']], level=0).run()
-			print(reply)
+			reply = __import__(mpath, globals(), locals(), fromlist=[conf_dict['Base_folder']], level=0).run(kwargs)
+			print_(reply, "\n")
 			self.Rsoc.send(reply.encode('utf-8'))
 		else:
 			try:
@@ -56,16 +61,13 @@ class accept_req(threading.Thread):
 				resp_f = open(conf_dict['Base_folder'] + path, 'rb')
 			self.Rsoc.sendfile(resp_f)
 			resp_f.close()
-			print(path, end="\n")
+			print_(path, "\n")
 		
 		self.Rsoc.close()
 
 # Parse
 def  parse_kwargs(kwargs):
-	d_kwargs = {}
-	
-	
-	return d_kwargs
+	return dict(urlparse.parse_qsl(urlparse.urlsplit(kwargs).query))
 
 def tf(s):
 	if s == 'True':
@@ -74,6 +76,12 @@ def tf(s):
 		return False
 	else:
 		return s
+
+def print_(p, e):
+	if p:
+		print(p, end=e)
+	else:
+		print("-", end=e)
 
 #Read conf file
 with open('magws.conf', 'r') as cf:
