@@ -18,3 +18,4 @@ https://github.com/anjlab/android-inapp-billing-v3
 
 DnD:
 https://dnd.wizards.com/articles/features/character_sheets
+http://rpg.stackexchange.com/questions/46643/does-warlock-combat-just-equal-eldritch-blast-spam
