@@ -18,6 +18,7 @@ https://docs.python.org/3/library/string.html
 https://en.wikipedia.org/wiki/Optimal_asymmetric_encryption_padding
 http://www.opensource.apple.com/source/OpenSSH/OpenSSH-7.1/openssh/rsa.c
 http://www.openssl.org/docs/manmaster/crypto/rsa.html
+https://www.youtube.com/user/OverpoweredGames/videos
 
 Android:
 https://www.reddit.com/r/Android/comments/1w3woc/a_step_by_step_guide_about_how_to_get_started_and/
