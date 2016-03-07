@@ -12,11 +12,31 @@ https://github.com/fogleman/PirateMap
 https://www.reddit.com/r/proceduralgeneration/comments/3vcbb3/monthly_challenge_1_dec_2015_procedural_pirate_map/
 http://security.stackexchange.com/questions/108746/how-to-store-passwords-written-on-a-physical-notebook
 https://github.com/themattrix/bash-concurrent
+https://regexcrossword.com/challenges/hamlet/puzzles/2
+http://code.activestate.com/recipes/577737-public-key-encryption-rsa/
+https://docs.python.org/3/library/string.html
+https://en.wikipedia.org/wiki/Optimal_asymmetric_encryption_padding
+http://www.opensource.apple.com/source/OpenSSH/OpenSSH-7.1/openssh/rsa.c
+http://www.openssl.org/docs/manmaster/crypto/rsa.html
 
 Android:
 https://www.reddit.com/r/Android/comments/1w3woc/a_step_by_step_guide_about_how_to_get_started_and/
 https://github.com/anjlab/android-inapp-billing-v3
+https://www.androidfilehost.com/?w=files&flid=44010
+https://github.com/libgdx/libgdx/wiki/A-simple-game
+https://github.com/libgdx/libgdx-demo-superjumper/tree/master/core/src/com/badlogicgames/superjumper
+https://www.reddit.com/r/androiddev/comments/48k8rv/im_currently_in_the_process_of_picking_up_android/
 
 DnD:
 https://dnd.wizards.com/articles/features/character_sheets
 http://rpg.stackexchange.com/questions/46643/does-warlock-combat-just-equal-eldritch-blast-spam
+
+Arch:
+https://www.reddit.com/r/unixporn/comments/49dl5d/i3gaps_winter_is_over/
+https://github.com/kelaun/i3config-blueStag
+
+Raspberry PI:
+https://www.adafruit.com/products/2441
+https://www.adafruit.com/products/2455
+http://www.pimusicbox.com/
+https://frillip.com/using-your-raspberry-pi-3-as-a-wifi-access-point-with-hostapd/
