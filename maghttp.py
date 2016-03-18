@@ -2,27 +2,35 @@ import threading
 import urllib.parse as urlparse
 from importlib import import_module
 
-class httpReq(self):
+class httpReq:
 	def httpParseHeader(self, str):
-		lines, self.body = splitReq(str)
+		print("=> " + str)
+		lines, self.body = self.splitReq(str)
 		
-		self.metode, self.path, self.version = lines[0].split(' ')
+		#print("\n".join(lines))
+		
+		self.metode, self.path, self.version = lines[0].split(" ")
 		self.fields = {}
 		self.kwargs = {}
 		
-		if "?" in path:
-			self.path, self.kwargs = path.split("?", 1)
-			kwargs = dict(urlparse.parse_qsl(urlparse.urlsplit("?" + kwargs).query))
+		if "?" in self.path:
+			self.path, self.kwargs = self.path.split("?", 1)
+			self.kwargs = dict(urlparse.parse_qsl(urlparse.urlsplit("?" + self.kwargs).query))
+		
+		if self.path == "/" or self.path == "":
+			self.path = "/index.html"
 		
 		for line in lines[1:]:
-			line = line.decode()
 			field, value = line.split(": ", 1)
 			self.fields[field] = value
 	
-	def httpAppendBody(self, str)
+	def httpAppendBody(self, str):
 		self.body += str
-		
-	def splitReq(str):
+	
+	def append():
+		self.kwargs["body"] = self.body
+	
+	def splitReq(self, str):
 		lines = str.splitlines()
 		before = True
 		h = []
@@ -36,39 +44,26 @@ class httpReq(self):
 			else:
 				before = False
 		return h, "".join(b)
-	
-	
-	def httpParse(self, reqStr):
-		lines = reqStr.splitlines()
-		
-		self.metode, self.path, self.version = lines[0].split(' ')
-		self.fields = {}
-		self.body = ""
-		
-		self.moreBody = False
-		
-		for line in lines[1:]:
-			if line not in ('\n', '\r\n'):
-				if not self.moreBody:
-					field, value = line.split(": ", 1)
-					self.fields[field] = value
-				else:
-					self.body += line
-			else:
-				self.moreBody = True
-		if len(self.body) < int(fields['Content-Length']):
-			self.body = self.body.decode()
-			self.moreBody = False				# hva skal den returnere når content-length er feil eller mangler?
 
-class httpRes(self):
-	def __init__(self, code):
-		self.version = ""
-		self.code = code
-		self.shortDisc = ""
+
+class httpRes:
+	def __init__(self):
+		self.version = "HTTP/1.1"
+		self.code = ""
+		self.shortDisc = {200: "OK", 404: "Not Found", 400: "Bad Request"}
 		self.body = ""
+		self.server = "magServHTTP v 0.1"
 	
-	def str():
-		
+	def str(self):
+		r = ""
+		r += self.version + " " + self.code + " " + self.shortDisc[int(self.code)] + "\r\n"
+		r += "Server: " + self.server + "\r\n"
+		r += "Content-Type: text/html\r\n"
+		r += "Connection: Closed\r\n"
+		if self.body:
+			r += "Content-Length: " + str(len(self.body)) + "\r\n"
+			r += "\r\n" + self.body
+		return r
 
 class httpHandler(threading.Thread):
 	def __init__(self, rsoc, raddr):
@@ -78,44 +73,49 @@ class httpHandler(threading.Thread):
 		
 		self.httpreq = httpReq()
 		self.httpres = httpRes()
-		
 	
 	def run(self):
-		recvAll()
-		#Do the right stuff (TM)
-		self.httpres = httpRes(self."The right stuff (TM)")
-		sendAll(httpres)
-		
+		if self.recvAll():
+			self.openFile()
+			self.sendAll()
 		self.rsoc.close()
 	
 	def recvAll(self):
-		str = self.rsoc.recv(4096)
+		str = self.rsoc.recv(4096).decode()
+		if str == "":
+			return False
 		self.httpreq.httpParseHeader(str)
 		if self.httpreq.metode == 'POST':
 			if self.httpreq.fields['Content-Length']:
 				while self.httpreq.body < self.httpreq.fields['Content-Length']:
-					part = self.rsoc.recv(4096)
+					part = self.rsoc.recv(4096).decode()
 					if not part:
 						break
 					self.httpreq.httpAppendBody(part)
-				self.body = self.body.decode()
+				self.hrrpreq.append()
 			else:
 				self.httpres.code = "411"
+		return True
 	
 	def sendAll(self):
-		#placeholder
-	
-	def 
-	
-	def parsBody(self):
-		
+		s = self.httpres.str().encode('utf-8')
+		self.rsoc.send(s)
 	
 	def openFile(self):
 		try:
 			if ".py" in self.httpreq.path[-3:]:
-				mpath = conf_dict['Base_folder'] + "%s" % self.httpreq.path.replace(".py", "").replace("/", ".")
-				reply = __import__(mpath, globals(), locals(), fromlist=[conf_dict['Base_folder']], level=0).run(self.httpreq.kwargs)
-				self.Rsoc.send(reply.encode('utf-8'))
+				mpath = "www" + "%s" % self.httpreq.path.replace(".py", "").replace("/", ".")		#fix later
+				reply = __import__(mpath, globals(), locals(), fromlist=["www"], level=0).run( {**self.httpreq.kwargs, **self.httpreq.fields} )	#må lage en test for "503"
 			else:
-				
-		except FileNotFoundError, ImportError as err:
+				f = open("www" + self.httpreq.path, 'r')
+				reply = f.read()
+				f.close()
+			self.httpres.code = "200"
+		except (FileNotFoundError, ImportError) as err:
+			reply = open("www" + "404.html", 'rb')
+			self.httpres.code = "404"
+			
+		self.httpres.body = reply
+		
+		
+		
